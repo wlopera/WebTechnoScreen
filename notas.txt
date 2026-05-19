@@ -1,0 +1,35 @@
+Revisar esta acción:
+------------------------
+Revisa el Prompt.MD que esta en esta carpeta WebTechnoScreen para una app web react y nodejs:
+
+Si la aplicación es muy grande y ves que se corta la respuesta, puedes decirle: "Empieza generando primero el script SQL y la estructura del Backend, luego haremos el Frontend".¿Quieres que ajustemos algún detalle técnico adicional antes de que lo lances?
+
+Utiliza el diseño_ui.png como muestra para los estilos y css
+
+
+-------------------------
+
+Para Dar permisos a poder subir y bajar archivos del storage de supabase:
+--------------------------------------------------------------------------
+
+-- 1. Permitir subir archivos (INSERT) al bucket 'pdfs'
+CREATE POLICY "Permitir subidas públicas al bucket pdfs"
+ON storage.objects FOR INSERT
+TO public
+WITH CHECK (bucket_id = 'pdfs');
+
+-- 2. Permitir descargar y leer archivos (SELECT) del bucket 'pdfs'
+CREATE POLICY "Permitir lecturas públicas al bucket pdfs"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'pdfs');
+
+-- 3. Permitir borrar archivos (DELETE) del bucket 'pdfs' (para que funcione el botón de eliminar de la consola Admin)
+CREATE POLICY "Permitir eliminaciones públicas al bucket pdfs"
+ON storage.objects FOR DELETE
+TO public
+USING (bucket_id = 'pdfs');
+
+
+
+n8n recibe la cabecera X-API-KEY. Puedes usar el nodo Webhook o un nodo If para validar que la clave en {{ $json.headers['x-api-key'] }} coincida con tu clave secreta interna para bloquear peticiones no autorizadas.
