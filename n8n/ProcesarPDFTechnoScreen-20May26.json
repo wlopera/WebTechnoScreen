@@ -1,0 +1,179 @@
+{
+  "name": "ProcesarPDFTechnoScreen",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c87828f5-384f-46a2-8b36-9c4f6ce2d7c3",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d5e60c5d-3842-4cd5-ad62-c9556df2c8e6",
+      "name": "Webhook",
+      "webhookId": "c87828f5-384f-46a2-8b36-9c4f6ce2d7c3"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.pdfUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "35979095-5c84-43e7-9b74-92e60c994fdc",
+      "name": "HTTP Request",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d18bc7ce-ba97-4992-853c-2b2379401b89",
+      "name": "Extract from File",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"status\": \"processed\",\n  \"message\": \"El archivo PDF fue validado y abierto con éxito en n8n.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "2fd68f9b-0ff8-4d3b-b05c-92d9d7427c4d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"status\": \"error\",\n  \"message\": \"Error crítico: El archivo PDF está corrupto o no se pudo abrir.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        96
+      ],
+      "id": "d1d2d390-7937-4414-a1ff-1083ddbbcf9e",
+      "name": "Respond to Webhook1"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "accept": "application/json, text/plain, */*",
+            "content-type": "application/json",
+            "x-api-key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNGY4NWViMy1hOTJmLTRhNjgtYTg5NS01ZmU0MDk3MTQ5ZmQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiZjQ0NTY3N2YtMzIxZC00M2M4LWFlZjgtYWUyMmM5NDBkM2YzIiwiaWF0IjoxNzc5MzEyOTUyLCJleHAiOjE3ODQ0MzM2MDB9.iGjEc6bm3kZkTujV-8zhczmp-HLvaAtwnp3AoGa48xM",
+            "user-agent": "axios/1.16.1",
+            "content-length": "479",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "host": "localhost:5678",
+            "connection": "keep-alive"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "orderId": "8799bee5-28f4-4a98-b029-d7b0cf174070",
+            "userId": "5d5dcd7d-e0d3-4d64-bdd9-5a15b6a5e485",
+            "email": "william.lopera@pranical.com",
+            "templateId": "4f0ff831-5486-4d67-a492-318656a3842a",
+            "date": "2026-05-20T21:48:24.747Z",
+            "pdfUrl": "URL/XYZ.pdf",
+            "file": {
+              "originalname": "Pedidos.pdf",
+              "mimetype": "application/pdf",
+              "size": 2659133
+            }
+          },
+          "webhookUrl": "http://localhost:5678/webhook/XYZ",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1c3771cc-7d47-47bc-95e0-5a6496ce2360",
+  "meta": {
+    "instanceId": "bdcbea283cabc9980ac758f42ef91f811ef888ac61884aa47c703740df779b51"
+  },
+  "id": "6eBXv5KThqwsCPFN",
+  "tags": []
+}
